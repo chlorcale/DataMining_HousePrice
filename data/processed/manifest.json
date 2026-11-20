@@ -1,0 +1,13 @@
+{
+  "raw_samples": 2930,
+  "raw_predictors": 79,
+  "features_after_ultra_feature_builder": 86,
+  "train_rows": 2344,
+  "test_rows": 586,
+  "split": "sklearn train_test_split, test_size=0.2, random_state=42, shuffle=True",
+  "cv": "KFold(5,shuffle=True,random_state=123); 2026 in optional Ultra advanced analysis",
+  "source_feature_builder": "FeatureBuilder(engineered=True) copied byte-for-byte",
+  "processing_level": "rowwise FE only; fold-fitted imputation/encoding/scaling in src/preprocessing.py",
+  "test_target_policy": "For final once-only evaluation; do not use for feature selection or tuning",
+  "categorical_missing_policy": "retained at shared FE stage; LightGBM native pathway keeps NaN"
+}

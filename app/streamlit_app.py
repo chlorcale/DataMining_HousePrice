@@ -1,37 +1,21 @@
-"""UI integration preview. No hidden or inherited trained model."""
-from pathlib import Path
+"""Group integration UI skeleton: models intentionally NOT supplied by teammates yet."""
 import streamlit as st
-import pandas as pd
+from pathlib import Path
+import json
 ROOT=Path(__file__).resolve().parents[1]
-st.set_page_config(page_title='Ames | CO3029',page_icon='🏡',layout='wide')
-st.markdown("""<style>
-[data-testid="stAppViewContainer"] {background:#f5f8f6;}
-.block-container{max-width:1150px;padding-top:2rem;}
-h1,h2,h3{color:#173e33;}
-[data-testid="stMetric"]{background:white;border:1px solid #e2ebe5;border-radius:14px;padding:17px;}
-</style>""",unsafe_allow_html=True)
-st.title('🏡 Ames Housing · Data Mining')
-st.caption('CO3029 — Không hiển thị dự báo khi chưa tích hợp model thật của nhóm')
-col1,col2,col3=st.columns(3)
-col1.metric('Quan sát nguồn','2.930')
-col2.metric('Thuật toán dự kiến','4')
-rows=[]
-path=ROOT/'outputs/integration/model_comparison.csv'
-if path.exists():
-    rows=pd.read_csv(path)
-    col3.metric('Đã có kết quả',str(len(rows)))
-else: col3.metric('Đã có kết quả','0')
-tab1,tab2,tab3=st.tabs(['Tổng quan','So sánh thuật toán','Dự báo'])
-with tab1:
-    st.subheader('Bộ dữ liệu')
-    st.write('Ames Housing, Iowa (2006–2010). Nguồn CSV được lưu kèm project. Không phải dữ liệu nhà đất Việt Nam.')
-    img=ROOT/'outputs/eda/price_hist.png'
-    if img.exists():st.image(str(img),caption='Phân phối giá trên tập phát triển')
-    else:st.info('Chạy `python scripts/eda.py` để tạo biểu đồ EDA.')
-with tab2:
-    st.subheader('Bảng đánh giá dùng chung')
-    if path.exists() and len(rows):st.dataframe(rows,use_container_width=True,hide_index=True)
-    else:st.warning('Chưa nhận đủ kết quả từ hai thành viên. Không có metric giả.')
-with tab3:
-    st.subheader('Mô hình dự đoán — chờ tích hợp')
-    st.info('Sau khi cả nhóm chọn model bằng CV, người tích hợp sẽ nối đúng các input thực tế với model đã export. Hiện chưa bật dự đoán để tránh dùng nhầm model hoặc giả số.')
+st.set_page_config(page_title="Ames CO3029",layout="centered")
+st.title("Ames Housing — CO3029")
+st.info("Dữ liệu & preprocessing đã sẵn sàng. Bốn model đang chờ hai thành viên train, đánh giá và bàn giao.")
+st.write("Ứng dụng tích hợp sẽ dùng các mô hình được nhóm kiểm chứng, không giả lập dự báo bằng kết quả nghiên cứu cũ.")
+manifest=ROOT/'data'/'processed'/'manifest.json'
+if manifest.exists():
+    m=json.loads(manifest.read_text(encoding="utf8"))
+    st.metric("Development samples",m['train_rows'])
+    st.metric("Held-out samples",m['test_rows'])
+    st.metric("Engineered predictors",m['features_after_ultra_feature_builder'])
+st.subheader("Trạng thái thuật toán")
+for member,name,models in [('A','member_a',['ridge','random_forest']),('B','member_b',['elasticnet','lightgbm'])]:
+    for model in models:
+        metrics=ROOT/'results'/name/f'{model}_metrics.json'
+        st.write(f"{member} — {model}: {'Đã có bảng metric' if metrics.exists() else 'Chưa bàn giao'}")
+st.caption("Không được dự đoán khi chưa có model fitted phù hợp schema và kiểm thử tích hợp.")

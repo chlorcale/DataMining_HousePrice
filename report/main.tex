@@ -1,66 +1,40 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage{fontspec}
 \setmainfont{DejaVu Serif}
-\usepackage[margin=25mm]{geometry}
-\usepackage{graphicx,booktabs,tabularx,array,amsmath,hyperref,fancyhdr,xcolor,enumitem,float}
-\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue}
-\setlength{\headheight}{16pt}\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small HCMUT · CO3029 · NHÓM}\fancyfoot[R]{\thepage}
-\newcommand{\pending}[1]{\textcolor{red!70!black}{[CẦN NHÓM XÁC NHẬN: #1]}}
+\usepackage[margin=23mm]{geometry}
+\usepackage{graphicx,booktabs,longtable,array,amsmath,hyperref,float}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\title{Bài tập lớn CO3029\\Khai phá Dữ liệu: Dự báo giá nhà trên bộ dữ liệu Ames Housing}
+\author{Nhóm: [Tên thành viên / MSSV cần điền]}
+\date{Học kỳ 261}
 \begin{document}
-\begin{titlepage}\begin{center}
-{\Large ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH}\\[8pt]
-{\Large\bfseries TRƯỜNG ĐẠI HỌC BÁCH KHOA}\\[7pt]
-{\large KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH}\\[20pt]
-\includegraphics[width=35mm]{hcmut.png}\\[23pt]
-{\LARGE\bfseries BÁO CÁO BÀI TẬP LỚN — BẢN KHỞI TẠO NHÓM}\\[9pt]
-{\Large Khai phá dữ liệu CO3029 — HK261}\\[15pt]
-{\Large Phân tích Ames Housing và dự báo giá bất động sản}\\[24pt]
-\pending{Tên nhóm, thành viên, MSSV, giảng viên}\\[12pt]
-\textbf{Bản phân công: chỉ hoàn thiện nội dung chung, chưa có bài làm của hai thành viên phụ trách mô hình}
-\vfill Thành phố Hồ Chí Minh, 2026
-\end{center}\end{titlepage}
-\tableofcontents\newpage
-\section{Giới thiệu và mục tiêu nghiệp vụ}
-Dự báo giá bán nhà ở Ames, Iowa dựa trên đặc điểm vật lý, vị trí và chất lượng nhà. Mục tiêu học phần là thực hiện quy trình khám phá tri thức (KDD): hiểu dữ liệu, mô tả và làm sạch, trích xuất đặc trưng, huấn luyện và so sánh nhiều thuật toán, rồi minh họa dự báo. Mô hình chỉ phục vụ phân tích giá giao dịch lịch sử Ames 2006--2010, không suy rộng đến thị trường Việt Nam hiện nay.
-
-Bài toán triển khai được đặt tại \emph{thời điểm trước bán}: các đặc trưng liên quan đến kết quả hoặc tình huống giao dịch sau đó không được làm đầu vào. Giá bán \texttt{SalePrice} là biến mục tiêu, đo bằng USD.
-\section{Bộ dữ liệu và kiểm toán chất lượng}
-Nguồn: Ames Housing do De Cock công bố, bản đầy đủ gồm 2.930 quan sát và 79 thuộc tính giải thích sau khi loại mã định danh \texttt{PID}, \texttt{Order}. Dữ liệu CSV đính kèm tại \texttt{data/ames.csv}; tên thuộc tính được chuẩn hóa thống nhất sang snake\_case. Dữ liệu được xác minh bằng số dòng, số cột, tên nhãn và mã băm SHA-256 trong \texttt{DATA\_PROVENANCE.json}.
-
-Các biến số mô tả diện tích và số phòng; biến phân loại mô tả khu vực, chất lượng vật liệu, loại nhà; một số ô trống có thể mang ý nghĩa ``không có tiện ích'' thay vì dữ liệu chưa biết. Việc diễn giải và xử lý từng nhóm thuộc tính cần căn cứ mô tả dữ liệu, không tự động xóa mọi dòng thiếu.
-\subsection{Quy trình EDA — phần người tích hợp phụ trách}
-EDA trên tập phát triển gồm: thống kê mô tả và phân vị giá; tỷ lệ thiếu; tương quan Pearson của biến số; trung vị giá theo Neighborhood, Overall Quality; phân phối giá và quan hệ diện tích--giá. Chạy \texttt{python scripts/eda.py} để tạo các bảng và hình trong \texttt{outputs/eda/}. Ngoài ra, kiểm tra điểm đáng nghi bằng IQR trên log(giá/diện tích) của tập phát triển và lưu danh sách để rà soát; không tự động xóa nhà có giá cao. Không dùng nhãn test để quyết định đặc trưng, ngưỡng ngoại biên hoặc cách xử lý thiếu.
-\IfFileExists{figures/price_hist.png}{\begin{figure}[H]\centering\includegraphics[width=.8\linewidth]{figures/price_hist.png}\caption{Phân phối giá bán trên tập phát triển (không gồm test).}\end{figure}}{\noindent\emph{[Biểu đồ chưa tạo: chạy scripts/eda.py.]}}
-\IfFileExists{figures/price_vs_area.png}{\begin{figure}[H]\centering\includegraphics[width=.8\linewidth]{figures/price_vs_area.png}\caption{Liên hệ diện tích sinh hoạt với giá bán trên tập phát triển.}\end{figure}}{}
-\section{Tiền xử lý và đặc trưng — giao thức chung}
-\subsection{Phân chia dữ liệu và chống leakage}
-Cố định 80\% tập phát triển, 20\% test với \texttt{random\_state=42}: tương ứng 2.344 và 586 mẫu. Trong tập phát triển dùng 5-fold KFold xáo trộn với seed 2026. Mọi phép điền khuyết, biến đổi, scaling, encoding, feature selection và tuning dùng thông tin \emph{chỉ từ train fold}. Nhãn validation/test không được đưa vào bước tính biến đầu vào.
-
-Bài toán định giá trước bán loại \texttt{YrSold}, \texttt{MoSold}, \texttt{SaleType}, \texttt{SaleCondition} cùng \texttt{PID} và \texttt{Order}; nhãn \texttt{SalePrice} tuyệt đối không thuộc \(X\). Các thành viên phải xác minh không vô tình tái tạo thông tin hậu nghiệm qua đặc trưng mới.
-\subsection{Đặc trưng dẫn xuất và lựa chọn phương pháp}
-Các biến dẫn xuất vật lý như chất lượng \(\times\) diện tích, tổng số phòng tắm có trọng số, tổng diện tích hiên, và diện tích sinh hoạt cộng tổng diện tích tầng hầm có thể thử như giả thuyết. Lưu ý tổng diện tích tầng hầm có thể gồm phần chưa hoàn thiện; không gọi biến này là ``tổng diện tích hoàn thiện''. Những đặc trưng cần thời điểm giao dịch thực tế phải được thay đổi hoặc bỏ trong nhánh pre-sale. Hiệu quả đặc trưng chỉ kết luận sau ablation trên CV của từng thành viên, không xem là cải tiến chắc chắn.
-\subsection{Lựa chọn preprocessing theo loại mô hình}
-Không buộc tất cả thuật toán dùng một encoder. Hồi quy có điều chuẩn thường cần chuẩn hóa số và one-hot danh mục; cây có thể không cần scaling và có cách xử lý danh mục khác. Mỗi thành viên trình bày tại sao dùng một phép biến đổi, phương án thay thế, và kết quả so sánh khi cần.
-\section{Thiết kế đánh giá và phân công}
-Các thuật toán được chia cho hai thành viên. Mỗi người chịu trách nhiệm mã huấn luyện, mô tả nguyên lý, giả thuyết, tuning, đánh giá, diễn giải và viết nội dung phần mình. Các thước đo thống nhất: MAE (USD), RMSE (USD), \(R^2\), MAPE (\%). \(R^2\) không phải tỷ lệ căn nhà dự đoán đúng. CV dùng để chọn mô hình; test chỉ được dùng khi chốt cấu hình. Tập holdout này đã từng được xem trong nghiên cứu tham khảo trước nên các kết quả sau này cần ghi đúng giới hạn độc lập.
-
+\maketitle
+\tableofcontents
+\newpage
+\section{Bài toán và phạm vi}
+Sử dụng dữ liệu Ames Housing gồm 2.930 giao dịch, xây dựng mô hình dự báo giá bán (USD). Bản khởi tạo này chỉ ghi nhận phần dữ liệu, EDA và tiền xử lý chung; các thành viên tự huấn luyện, tuning, đánh giá và điền kết quả vào các mục được phân công. Dữ liệu chứa các trường thời điểm/điều kiện bán, nên bài toán mặc định là phân tích giao dịch lịch sử, không tự nhận dự báo giá trước khi giao dịch.
+\section{Đặc điểm dữ liệu và EDA}
+Sử dụng tập phát triển (2.344 mẫu) để mô tả biến mục tiêu, tỉ lệ thiếu theo cột, tương quan và ngoại biên; 586 mẫu test chỉ dùng sau khi khóa lựa chọn mô hình. Phân phối giá lệch phải nên cần thử \texttt{log1p(SalePrice)} như một giả thuyết mô hình, không áp đặt vào dữ liệu X.
+\begin{figure}[H]\centering\includegraphics[width=.83\linewidth]{figures/price_distribution.png}\caption{Phân phối giá bán, tập phát triển.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.83\linewidth]{figures/area_price.png}\caption{Diện tích sinh hoạt và giá bán, tập phát triển.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.83\linewidth]{figures/missing_fraction.png}\caption{Tỉ lệ giá trị thiếu, tập phát triển.}\end{figure}
+\section{Tiền xử lý và kiểm soát leakage}
+\subsection{Nguồn dữ liệu và đặc trưng gốc}
+File \texttt{data/ames.csv}, \texttt{src/data.py} và \texttt{src/features.py} được giữ nguyên từng byte từ ULTRA, có xác thực SHA-256. Chuẩn hóa tên, bỏ mã định danh, giữ 79 predictor gốc, tạo 7 biến dẫn xuất nâng lên 86 cột theo \texttt{FeatureBuilder}.
+\subsection{Split và cross-validation}
+Train/test: \texttt{train\_test\_split(test\_size=0.2, random\_state=42)}, tương ứng 2.344 và 586 mẫu. Giao thức CV chung: 5-fold, shuffle, random seed 123 theo baseline ULTRA. Dữ liệu đã xuất trong \texttt{data/processed}, giữ missing và categorical để các bước có tham số được fit bên trong training fold.
+\subsection{Imputation, encoding và scaling theo thuật toán}
+Với Ridge và ElasticNet: số được điền median + missing indicator và StandardScaler, danh mục điền Unknown rồi OneHotEncoder. Với RandomForest: impute median + missing indicator và OrdinalEncoder, không scale; cách mã hóa ordinal có thể áp đặt thứ tự giả nên phải được kiểm chứng. Với LightGBM: giữ danh mục ở dạng pandas categorical học từ train và giữ missing numeric để mô hình xử lý. Ba factory chưa fit được triển khai trong \texttt{src/preprocessing.py}; việc fit được thực hiện riêng từng fold trong model pipeline.
+\subsection{Preview xuất sẵn và nguyên tắc sử dụng}
+Các ma trận số đầy đủ ở \texttt{data/fitted\_previews} được fit \textbf{chỉ trên 2.344 mẫu phát triển}, và dùng để kiểm tra tính đúng đắn. \textbf{Không dùng các file đã fit toàn dev này để đánh giá CV}, vì validation fold sẽ ảnh hưởng tới imputer/encoder/scaler. Trong mỗi fold phải gọi factory và fit mới. Dữ liệu LightGBM dạng native categories cần giữ pandas dtype, bản codes CSV chỉ dùng để kiểm tra.
+\subsection{Ngoại biên}
+Phát hiện ngoại biên sử dụng log giá trên diện tích sống, ngưỡng IQR lấy từ dev; chỉ đánh dấu các mẫu cần rà soát. Không xóa các giao dịch hợp lệ hoặc lọc test dựa trên giá thật. Nếu thành viên thử outlier filtering để cải thiện mô hình, chỉ tính ngưỡng trong training fold và đánh giá validation chưa bị lọc.
+\section{Giao thức báo cáo và đánh giá}
+Các thành viên tự chọn và tuning tham số bằng CV trên tập phát triển, sau đó đánh giá MAE, RMSE, $R^2$ và MAPE trên test theo một giao thức thống nhất. Không dùng các metric của ULTRA cũ để thay cho kết quả nhóm. Không được gọi test đã được nghiên cứu trước đây là holdout độc lập mới.
 \input{member_a.tex}
 \input{member_b.tex}
-
-\section{Tổng hợp kết quả và thảo luận — CHỜ BÀN GIAO}
-\pending{Bảng 4 thuật toán, so sánh CV/test, tuning, figure, sai số theo phân khúc, giải thích feature importance và hạn chế của từng mô hình. Người tích hợp chỉ tổng hợp số liệu do các thành viên tạo ra, không tự điền.}
-
-\section{Thiết kế ứng dụng demo — phần tích hợp}
-Khung Streamlit thể hiện thông tin dữ liệu, EDA, bảng so sánh thuật toán khi có kết quả, và vùng dự báo chỉ kích hoạt sau khi nhóm chọn và kiểm chứng model xuất từ các script thật. Không dùng lại model từ bản nghiên cứu tham khảo dưới tên bài làm của nhóm. Khi thêm form nhập, mỗi feature cần ứng với một điều khiển nhập thực tế; không mượn âm thầm thuộc tính của căn nhà mẫu.
-
-\section{Kết luận và công việc tiếp theo}
-Phần chung đã thiết lập dữ liệu gốc, kiểm tra chất lượng, thiết kế split/CV, định nghĩa metric và tiêu chuẩn bàn giao. Các kết luận so sánh thuật toán, cải tiến và hiệu năng vẫn chưa có cho đến khi hai thành viên hoàn thành và tự kiểm chứng. \textbf{Không tuyên bố đạt R$^2$ cụ thể cho repo nhóm lúc này.}
-
-\section*{Khai báo sử dụng AI}\addcontentsline{toc}{section}{Khai báo sử dụng AI}
-\pending{Nhóm mô tả trung thực công cụ hỗ trợ, phần sinh viên tự triển khai, chỉnh sửa, chạy và kiểm chứng. Quy định CO3029 không cho phép nộp sản phẩm do AI tạo ra toàn bộ hoặc phần lớn.}
-\begin{thebibliography}{9}
-\bibitem{decock2011} De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing Data as an End of Semester Regression Project. Journal of Statistics Education, 19(3).
-\bibitem{scikit} scikit-learn developers. User Guide. \url{https://scikit-learn.org/stable/user_guide.html}.
-\bibitem{han} Han, J., Pei, J., Tong, H. (2022). Data Mining: Concepts and Techniques (4th ed.). Morgan Kaufmann.
-\end{thebibliography}
+\section{Tích hợp và giao diện}
+Đây là placeholder tích hợp: sau khi thành viên bàn giao model có thể nạp và dự đoán, thiết kế giao diện nhập các thuộc tính thật sự biết được của nhà. Không dùng dữ liệu từ hàng mẫu ẩn làm trường đầu vào. Bộ biến cho demo pre-sale phải được xác định lại và kiểm chứng riêng.
+\section{Tài liệu và công bố AI}
+\textbf{[Cần nhóm tự điền]}: Trích dẫn Ames Housing, scikit-learn và LightGBM theo các nguồn nhóm thực sự sử dụng; ghi rõ AI hỗ trợ phần nào, phần nào thành viên tự kiểm chứng và tự viết. Không nộp khung placeholder như báo cáo hoàn tất.
 \end{document}

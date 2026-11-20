@@ -2,12 +2,11 @@
 __pycache__/
 .pytest_cache/
 *.py[cod]
-*.log
+.ipynb_checkpoints/
+*.joblib
+*.pkl
 report/*.aux
+report/*.log
 report/*.out
 report/*.toc
-report/*.log
-results/**/model.joblib
-artifacts/*.joblib
-outputs/
-!results/**/.gitkeep
+report/*.synctex.gz

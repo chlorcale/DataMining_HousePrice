@@ -1,0 +1,6 @@
+{
+  "log_unit_price_iqr_lower": 4.092666581019253,
+  "log_unit_price_iqr_upper": 5.444170088308213,
+  "review_flagged": 53,
+  "policy": "Do NOT remove from shared dataset; no target-derived filtering of holdout/CV validation."
+}

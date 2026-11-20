@@ -1,0 +1,352 @@
+{
+  "ms_zoning": [
+    "RL",
+    "RM",
+    "FV",
+    "C (all)",
+    "RH",
+    "I (all)",
+    "A (agr)"
+  ],
+  "street": [
+    "Pave",
+    "Grvl"
+  ],
+  "alley": [
+    "Grvl",
+    "Pave"
+  ],
+  "lot_shape": [
+    "Reg",
+    "IR2",
+    "IR1",
+    "IR3"
+  ],
+  "land_contour": [
+    "Lvl",
+    "Low",
+    "HLS",
+    "Bnk"
+  ],
+  "utilities": [
+    "AllPub",
+    "NoSewr",
+    "NoSeWa"
+  ],
+  "lot_config": [
+    "Inside",
+    "CulDSac",
+    "FR2",
+    "Corner",
+    "FR3"
+  ],
+  "land_slope": [
+    "Gtl",
+    "Sev",
+    "Mod"
+  ],
+  "neighborhood": [
+    "NWAmes",
+    "ClearCr",
+    "NAmes",
+    "OldTown",
+    "NoRidge",
+    "CollgCr",
+    "Mitchel",
+    "Crawfor",
+    "Gilbert",
+    "SawyerW",
+    "Edwards",
+    "Somerst",
+    "BrkSide",
+    "NridgHt",
+    "Veenker",
+    "Timber",
+    "Sawyer",
+    "IDOTRR",
+    "NPkVill",
+    "MeadowV",
+    "Blueste",
+    "Greens",
+    "StoneBr",
+    "SWISU",
+    "Blmngtn",
+    "BrDale",
+    "Landmrk",
+    "GrnHill"
+  ],
+  "condition_1": [
+    "Norm",
+    "Artery",
+    "RRAn",
+    "Feedr",
+    "RRNe",
+    "PosN",
+    "RRAe",
+    "RRNn",
+    "PosA"
+  ],
+  "condition_2": [
+    "Norm",
+    "Artery",
+    "RRNn",
+    "RRAe",
+    "PosA",
+    "Feedr",
+    "PosN",
+    "RRAn"
+  ],
+  "bldg_type": [
+    "1Fam",
+    "Duplex",
+    "2fmCon",
+    "TwnhsE",
+    "Twnhs"
+  ],
+  "house_style": [
+    "1Story",
+    "2Story",
+    "SLvl",
+    "SFoyer",
+    "1.5Fin",
+    "1.5Unf",
+    "2.5Unf",
+    "2.5Fin"
+  ],
+  "roof_style": [
+    "Gable",
+    "Flat",
+    "Hip",
+    "Mansard",
+    "Gambrel",
+    "Shed"
+  ],
+  "roof_matl": [
+    "CompShg",
+    "Tar&Grv",
+    "Roll",
+    "WdShngl",
+    "WdShake",
+    "ClyTile",
+    "Membran",
+    "Metal"
+  ],
+  "exterior_1st": [
+    "HdBoard",
+    "Plywood",
+    "BrkFace",
+    "AsbShng",
+    "VinylSd",
+    "Wd Sdng",
+    "WdShing",
+    "MetalSd",
+    "CemntBd",
+    "BrkComm",
+    "Stucco",
+    "Stone",
+    "PreCast",
+    "AsphShn",
+    "ImStucc",
+    "CBlock"
+  ],
+  "exterior_2nd": [
+    "HdBoard",
+    "Plywood",
+    "Stone",
+    "AsbShng",
+    "VinylSd",
+    "BrkFace",
+    "Wd Sdng",
+    "MetalSd",
+    "CmentBd",
+    "Brk Cmn",
+    "Wd Shng",
+    "Stucco",
+    "ImStucc",
+    "PreCast",
+    "CBlock",
+    "AsphShn"
+  ],
+  "mas_vnr_type": [
+    "BrkFace",
+    "BrkCmn",
+    "Stone",
+    "CBlock"
+  ],
+  "exter_qual": [
+    "TA",
+    "Fa",
+    "Gd",
+    "Ex"
+  ],
+  "exter_cond": [
+    "TA",
+    "Gd",
+    "Fa",
+    "Ex",
+    "Po"
+  ],
+  "foundation": [
+    "CBlock",
+    "PConc",
+    "Slab",
+    "BrkTil",
+    "Stone",
+    "Wood"
+  ],
+  "bsmt_qual": [
+    "Gd",
+    "TA",
+    "Fa",
+    "Ex",
+    "Po"
+  ],
+  "bsmt_cond": [
+    "TA",
+    "Gd",
+    "Po",
+    "Fa",
+    "Ex"
+  ],
+  "bsmt_exposure": [
+    "No",
+    "Gd",
+    "Av",
+    "Mn"
+  ],
+  "bsmtfin_type_1": [
+    "Unf",
+    "LwQ",
+    "GLQ",
+    "BLQ",
+    "ALQ",
+    "Rec"
+  ],
+  "bsmtfin_type_2": [
+    "Unf",
+    "ALQ",
+    "Rec",
+    "LwQ",
+    "GLQ",
+    "BLQ"
+  ],
+  "heating": [
+    "GasA",
+    "Wall",
+    "GasW",
+    "Grav",
+    "OthW",
+    "Floor"
+  ],
+  "heating_qc": [
+    "TA",
+    "Fa",
+    "Gd",
+    "Ex",
+    "Po"
+  ],
+  "central_air": [
+    "Y",
+    "N"
+  ],
+  "electrical": [
+    "SBrkr",
+    "FuseF",
+    "FuseA",
+    "FuseP",
+    "Mix"
+  ],
+  "kitchen_qual": [
+    "TA",
+    "Fa",
+    "Gd",
+    "Ex"
+  ],
+  "functional": [
+    "Typ",
+    "Min2",
+    "Sev",
+    "Min1",
+    "Maj2",
+    "Mod",
+    "Maj1",
+    "Sal"
+  ],
+  "fireplace_qu": [
+    "TA",
+    "Ex",
+    "Po",
+    "Gd",
+    "Fa"
+  ],
+  "garage_type": [
+    "Attchd",
+    "CarPort",
+    "Detchd",
+    "BuiltIn",
+    "Basment",
+    "2Types"
+  ],
+  "garage_finish": [
+    "RFn",
+    "Fin",
+    "Unf"
+  ],
+  "garage_qual": [
+    "TA",
+    "Gd",
+    "Fa",
+    "Po",
+    "Ex"
+  ],
+  "garage_cond": [
+    "TA",
+    "Gd",
+    "Fa",
+    "Po",
+    "Ex"
+  ],
+  "paved_drive": [
+    "Y",
+    "N",
+    "P"
+  ],
+  "pool_qc": [
+    "Ex",
+    "Fa",
+    "Gd",
+    "TA"
+  ],
+  "fence": [
+    "MnPrv",
+    "GdWo",
+    "GdPrv",
+    "MnWw"
+  ],
+  "misc_feature": [
+    "Shed",
+    "Gar2",
+    "Elev",
+    "Othr"
+  ],
+  "sale_type": [
+    "WD ",
+    "Oth",
+    "New",
+    "COD",
+    "ConLD",
+    "ConLw",
+    "ConLI",
+    "VWD",
+    "CWD",
+    "Con"
+  ],
+  "sale_condition": [
+    "Family",
+    "Abnorml",
+    "Normal",
+    "Partial",
+    "AdjLand",
+    "Alloca"
+  ]
+}

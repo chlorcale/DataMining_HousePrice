@@ -1,52 +1,38 @@
-# Ames Housing / CO3029 — Repo nhóm (khung tích hợp)
-
-**Trạng thái: INITIALIZED, CHƯA CÓ KẾT QUẢ THUẬT TOÁN CỦA NHÓM.** Các thành viên **tự triển khai, huấn luyện, đánh giá và viết báo cáo**.
+# CO3029 Ames Housing — Team Starter, EXACT Ultra source
 
 ## Phân công
 
-| Vai trò | Phạm vi | Nơi nộp |
-|---|---|---|
-| Người tích hợp | Dataset, quality check, EDA, shared protocol, code tổng hợp, báo cáo phần chung, khung UI | `data/`, `src/`, `scripts/`, `report/` |
-| Thành viên A | Ridge + Random Forest: preprocessing phù hợp, tuning, CV, đánh giá, báo cáo | `members/member_a/`, `results/member_a/` |
-| Thành viên B | ElasticNet + LightGBM: preprocessing phù hợp, tuning, CV, đánh giá, báo cáo | `members/member_b/`, `results/member_b/` |
+- **Người tích hợp (bạn):** dataset, EDA, Ultra FeatureBuilder, train/test split, fold protocol, hoàn thiện 3 họ preprocessing (Ridge/ElasticNet, RandomForest, native LightGBM), tài liệu kỹ thuật, khung báo cáo/demo, tổng hợp.
+- **Member A:** Ridge và RandomForest: estimator, hyperparameter tuning, CV/test evaluation, phân tích kết quả, viết `report/member_a.tex`.
+- **Member B:** ElasticNet và LightGBM: tương tự, viết `report/member_b.tex`.
 
-Tên thuật toán có thể đổi theo quyết định nhóm nhưng vẫn phải có tối thiểu 3, thống nhất trước khi thực hiện.
+## Đã chạy trước khi phát hành
 
-## Setup
+- `data/processed/train_features.csv`, `test_features.csv`, nhãn và row IDs = **đúng Ultra 86 features**; chưa fit thống kê vì tránh leakage.
+- `data/fitted_previews/linear_*` + `tree_*`: **đã impute, encode và (linear) scale**, toàn numeric, không missing. Đã fit *chỉ trên dev*, transform test. **Không dùng bản này cho 5-fold CV**; phải fit lại preprocessing trong mỗi fold.
+- `data/fitted_previews/lightgbm_*`: numeric diagnostic view + category levels; native LightGBM sử dụng pandas `category` và cho phép numeric NaN. Với LightGBM hãy dùng factory trực tiếp.
+- EDA từ dev-only: `data/eda/`, biểu đồ `report/figures/`.
 
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python scripts/check_dataset.py
-python scripts/eda.py
+## Bắt đầu (Python 3.11+, Windows/Linux)
+
+```bash
+python -m pip install -r requirements.txt
+python scripts/check_project.py
 python -m pytest -q
 python scripts/collect_results.py
-streamlit run app/streamlit_app.py
+# Báo cáo PDF (nếu cài XeLaTeX): cd report && xelatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-Không phải tải dataset. `data/ames.csv` gồm 2.930 mẫu đầy đủ. Bảng EDA và kiểm toán ngoại biên sinh tại `outputs/eda/` (không commit mặc định). Ba hình chính sinh đồng thời tại `report/figures/` và được commit để báo cáo biên dịch ngay sau clone.
+Tái tạo dữ liệu (chỉ khi cần, kết quả đã nằm trong ZIP):
 
-## Đánh giá chung
-
-`src/protocol.py` quy định cùng cách chia dữ liệu, các metric và kiểm tra schema. Hai thành viên **không chia sẻ nhãn test để tune**; cần đưa toàn bộ scaler/encoder/imputer vào pipeline của từng fold. Xem `docs/RESULT_CONTRACT.md`.
-
-`python scripts/collect_results.py` chỉ tổng hợp file JSON thực sự được giao. Thiếu kết quả thì in PENDING, không chèn chỉ số giả.
-
-## Báo cáo và UI
-
-- `report/main.tex`: **chỉ có phần chung người tích hợp phụ trách**; phần hai thành viên để `\\input` trỏ tới hai placeholder riêng.
-- `report/member_a.tex`, `report/member_b.tex`: hai thành viên thay bằng văn bản và số liệu do chính mình làm.
-- `app/streamlit_app.py`: giao diện khởi tạo/hiển thị EDA và kết quả **nếu có**. Dự đoán chỉ bật sau khi team đưa model phù hợp vào `artifacts/`.
-- Kết quả nghiên cứu cá nhân và mô hình `.joblib` cũ **không có trong repo này**.
-
-Compile report (TeX Live + XeLaTeX):
-```powershell
-cd report
-xelatex -interaction=nonstopmode -halt-on-error main.tex
-xelatex -interaction=nonstopmode -halt-on-error main.tex
+```bash
+python scripts/export_shared_data.py
+python scripts/export_fitted_previews.py
+python scripts/eda.py
 ```
 
-## Trước khi nộp
+**Đọc trước khi viết model:** `docs/TEAM_MODEL_CONTRACT.md`.
 
-Cập nhật tên/MSSV, xác nhận tác giả từng phần, nguồn trích dẫn, khai báo AI trung thực; chạy UI và tự phản biện từng mô hình. Đề cương CO3029 không cho phép nộp sản phẩm AI tạo ra toàn bộ hoặc phần lớn.
+Các factory dùng **đầu vào từ `src.data.read_dataset()`** hoặc từ `data/processed/train_features.csv` khi truyền `engineered=False`. Tránh chạy feature engineering hai lần. Dùng `sklearn.pipeline.Pipeline([('preprocess', make_preprocessor('ridge')), ('estimator', YourEstimator(...))])` để tất cả các bước được fit trong training fold. Ridge, ElasticNet, RandomForest, LightGBM và tuning/metric đều **CHƯA chạy** trong bản bàn giao nhóm.
+
+**Hạn chế:** Đây là một bản dùng cho nghiên cứu *giá giao dịch lịch sử* như Ultra gốc; có `yr_sold`, `mo_sold`, `sale_type`, `sale_condition`. Muốn dự báo trước khi bán cần xác định và loại các trường không biết trước, sau đó thí nghiệm lại. Thầy yêu cầu hiểu và phản biện khi dùng AI; kết quả cần do từng người đọc, chạy và giải thích lại trung thực.

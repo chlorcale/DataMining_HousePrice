@@ -1,32 +1,55 @@
+import json,hashlib
 from pathlib import Path
-import sys
-ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-import pytest,numpy as np
-from src.protocol import load_split,folds,scores
+import numpy as np
+import pandas as pd
+import pytest
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import cross_val_score
 from src.data import read_dataset
 from src.features import FeatureBuilder
+from src.protocol import holdout_indices,make_cv
+from src.preprocessing import make_linear_preprocessor,make_tree_preprocessor,make_lightgbm_preprocessor
+ROOT=Path(__file__).resolve().parents[1]
 
-def test_dataset_and_split():
- X,y=read_dataset();assert len(y)==2930 and X.shape[1]==79
- a,b,ya,yb,ia,ib=load_split();assert len(ya)==2344 and len(yb)==586
- assert not set(ia).intersection(ib)
- for x in ('yr_sold','mo_sold','sale_type','sale_condition'):assert x not in a
- assert 'sale_price' not in a and 'pid' not in a
+def test_exact_ultra_hashes():
+    m=json.loads((ROOT/'data/processed/manifest.json').read_text())
+    for rel,key in [('data/ames.csv','source_data_sha256'),('src/data.py','source_data_py_sha256'),('src/features.py','source_features_py_sha256')]:
+        assert hashlib.sha256((ROOT/rel).read_bytes()).hexdigest()==m[key]
 
-def test_engineered_ames_names():
- X,_=read_dataset(); z=FeatureBuilder().transform(X.iloc[:20]);assert 'living_plus_total_basement_sf' in z
- assert np.allclose(z['living_plus_total_basement_sf'],X.iloc[:20]['gr_liv_area']+X.iloc[:20]['total_bsmt_sf'].fillna(0),equal_nan=True)
- assert np.allclose(z['porch_total'], X.iloc[:20][['open_porch_sf','enclosed_porch','screen_porch','3ssn_porch']].fillna(0).sum(axis=1),equal_nan=True)
+def test_holdout_and_fe_rows():
+    X,y=read_dataset();tr,te=holdout_indices(len(y))
+    assert len(tr)==2344 and len(te)==586 and len(set(tr)&set(te))==0
+    assert X.shape==(2930,79)
+    assert FeatureBuilder().fit_transform(X).shape[1]==86
 
-def test_metrics():
- x=scores([100,200],[110,190]);assert x['mae_usd']==10 and x['r2']>0
+def test_all_three_preprocessors_run_and_keep_train_schema():
+    X,_=read_dataset();tr,te=holdout_indices(len(X));a=X.iloc[tr[:240]];b=X.iloc[te[:32]]
+    for f in (make_linear_preprocessor,make_tree_preprocessor):
+        p=f().fit(a);aa=np.asarray(p.transform(a));bb=np.asarray(p.transform(b))
+        assert aa.shape[1]==bb.shape[1]
+        assert np.isfinite(aa).all() and np.isfinite(bb).all()
+    lg=make_lightgbm_preprocessor().fit(a)
+    q=lg.transform(b)
+    assert q.shape[1]==86
+    assert any(isinstance(q[c].dtype,pd.CategoricalDtype) for c in q)
 
-def test_folds_train_only():
- a,_,_,_,_,_=load_split(); foldlist=list(folds().split(a));assert len(foldlist)==5
- assert all(set(t).isdisjoint(v) for t,v in foldlist)
+def test_unknown_categorical_never_fit_on_test():
+    X,_=read_dataset();tr,te=holdout_indices(len(X));train=X.iloc[tr[:100]];val=X.iloc[te[:3]].copy()
+    val['neighborhood']='UNSEEN_NEIGHBORHOOD_NEVER_TRAIN'
+    pre=make_lightgbm_preprocessor().fit(train);frame=pre.transform(val)
+    assert frame['neighborhood'].isna().all()
 
-def test_no_post_sale_leakage_in_engineered():
- a,_,_,_,_,_=load_split()
- result=FeatureBuilder().transform(a.iloc[:5])
- assert 'age_at_sale' not in result and 'years_since_remodel' not in result
- assert not {'yr_sold','mo_sold','sale_type','sale_condition'}.intersection(result.columns)
+def test_encoded_train_previews_have_no_missing():
+    for fam in ['linear','tree']:
+        a=pd.read_csv(ROOT/f'data/fitted_previews/{fam}_train_numeric.csv')
+        b=pd.read_csv(ROOT/f'data/fitted_previews/{fam}_test_numeric.csv')
+        assert len(a)==2344 and len(b)==586 and list(a.columns)==list(b.columns)
+        assert np.isfinite(a.to_numpy()).all() and np.isfinite(b.to_numpy()).all()
+
+def test_fold_safe_cv_smoke():
+    X,y=read_dataset();it,_=holdout_indices(len(X));a=X.iloc[it[:100]];b=y.iloc[it[:100]]
+    from sklearn.compose import TransformedTargetRegressor
+    model=TransformedTargetRegressor(regressor=Pipeline([('preprocess',make_linear_preprocessor()),('estimator',Ridge(alpha=25))]),func=np.log1p,inverse_func=np.expm1,check_inverse=False)
+    scores=cross_val_score(model,a,b,cv=3,scoring='neg_mean_absolute_error')
+    assert np.isfinite(scores).all()
