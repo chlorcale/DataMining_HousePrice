@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.log
+report/*.aux
+report/*.out
+report/*.toc
+report/*.log
+results/**/model.joblib
+artifacts/*.joblib
+outputs/
+!results/**/.gitkeep
