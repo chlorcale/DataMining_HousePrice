@@ -1,4 +1,4 @@
-# CO3029 Ames Housing — Team Starter, EXACT Ultra source
+# CO3029 Ames Housing
 
 ## Phân công
 
