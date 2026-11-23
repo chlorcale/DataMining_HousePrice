@@ -1,4 +1,4 @@
-﻿# Ames Housing Static Site
+# Ames Housing Static Site
 
 This is a standalone, static GitHub Pages site. It contains no Python backend and
 no raw dataset. The fitted five-feature Ridge model is exported as
@@ -57,3 +57,16 @@ The browser form evaluates `expm1(intercept + Σ(coefficient ×
 ((input − mean) / scale)))`; if the artifact or feature order changes, update the
 browser implementation to match and verify parity against the coursework
 export. Do not copy the dataset or training scripts into this website repo.
+
+## Site structure
+
+- `index.html`: home page and results overview.
+- `pages/data.html`: dataset scope, real-row walkthrough, and preprocessing steps.
+- `pages/algorithms.html`: switchable algorithm comparison.
+- `pages/models/`: theory and experiment notes for the four models.
+- `pages/evaluation.html`: split protocol and metrics.
+- `pages/demo.html`: five-feature Ridge inference in the browser.
+- `pages/ames_samples.json`: eight example transactions extracted from the Ames CSV.
+- `model/`: browser model coefficients and experiment metrics.
+
+Use the buttons on the data page to move through a real record, preprocessing, model selection, and holdout evaluation. The record's actual sale price is shown for teaching; it is not presented as a model prediction.

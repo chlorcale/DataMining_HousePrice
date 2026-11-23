@@ -1,0 +1,90 @@
+[
+    {
+        "order":  "1",
+        "neighborhood":  "NAmes",
+        "living_area_sqft":  1656,
+        "overall_quality":  6,
+        "bedrooms":  3,
+        "full_baths":  1,
+        "year_built":  1960,
+        "sale_year":  2010,
+        "sale_price_usd":  215000
+    },
+    {
+        "order":  "2",
+        "neighborhood":  "NAmes",
+        "living_area_sqft":  896,
+        "overall_quality":  5,
+        "bedrooms":  2,
+        "full_baths":  1,
+        "year_built":  1961,
+        "sale_year":  2010,
+        "sale_price_usd":  105000
+    },
+    {
+        "order":  "3",
+        "neighborhood":  "NAmes",
+        "living_area_sqft":  1329,
+        "overall_quality":  6,
+        "bedrooms":  3,
+        "full_baths":  1,
+        "year_built":  1958,
+        "sale_year":  2010,
+        "sale_price_usd":  172000
+    },
+    {
+        "order":  "4",
+        "neighborhood":  "NAmes",
+        "living_area_sqft":  2110,
+        "overall_quality":  7,
+        "bedrooms":  3,
+        "full_baths":  2,
+        "year_built":  1968,
+        "sale_year":  2010,
+        "sale_price_usd":  244000
+    },
+    {
+        "order":  "5",
+        "neighborhood":  "Gilbert",
+        "living_area_sqft":  1629,
+        "overall_quality":  5,
+        "bedrooms":  3,
+        "full_baths":  2,
+        "year_built":  1997,
+        "sale_year":  2010,
+        "sale_price_usd":  189900
+    },
+    {
+        "order":  "6",
+        "neighborhood":  "Gilbert",
+        "living_area_sqft":  1604,
+        "overall_quality":  6,
+        "bedrooms":  3,
+        "full_baths":  2,
+        "year_built":  1998,
+        "sale_year":  2010,
+        "sale_price_usd":  195500
+    },
+    {
+        "order":  "7",
+        "neighborhood":  "StoneBr",
+        "living_area_sqft":  1338,
+        "overall_quality":  8,
+        "bedrooms":  2,
+        "full_baths":  2,
+        "year_built":  2001,
+        "sale_year":  2010,
+        "sale_price_usd":  213500
+    },
+    {
+        "order":  "8",
+        "neighborhood":  "StoneBr",
+        "living_area_sqft":  1280,
+        "overall_quality":  8,
+        "bedrooms":  2,
+        "full_baths":  2,
+        "year_built":  1992,
+        "sale_year":  2010,
+        "sale_price_usd":  191500
+    }
+]
