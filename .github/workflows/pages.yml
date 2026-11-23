@@ -25,9 +25,9 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Prepare static files
         run: |
-          mkdir -p _site/model
-          cp index.html styles.css script.js .nojekyll _site/
-          cp model/*.json _site/model/
+          mkdir -p _site
+          cp ./*.html ./*.css ./*.js .nojekyll _site/
+          cp -R model models _site/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
