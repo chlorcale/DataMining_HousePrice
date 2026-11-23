@@ -14,12 +14,10 @@ academic model, not a current market quote or a Vietnamese valuation.
    as `https://USERNAME.github.io/ames-housing-static/`, use a repository named
    `ames-housing-static`. To use the root URL `https://USERNAME.github.io/`, the
    repository name must be exactly `USERNAME.github.io`.
-2. Open PowerShell in this folder and connect it to the new repository:
+2. Open PowerShell in this folder and connect this already initialized Git
+   repository to the new remote:
 
    ```powershell
-   git init -b main
-   git add .
-   git commit -m "Add Ames Housing static site"
    git remote add origin https://github.com/USERNAME/REPOSITORY.git
    git push -u origin main
    ```
