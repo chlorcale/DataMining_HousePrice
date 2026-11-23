@@ -22,9 +22,10 @@ academic model, not a current market quote or a Vietnamese valuation.
    git push -u origin main
    ```
 
-3. In the repository, open **Settings → Pages** and choose **GitHub Actions** as
-   the publishing source. The workflow in `.github/workflows/pages.yml` deploys
-   the site on pushes to `main`.
+3. In the repository, open **Settings → Pages**. Under **Build and deployment**,
+   set **Source** to **GitHub Actions**. The workflow in
+   `.github/workflows/pages.yml` deploys the site on pushes to `main` and can
+   also be started manually from the **Actions** tab.
 4. Wait for the **Publish static site** workflow to finish. GitHub shows the live
    URL under **Settings → Pages**.
 
@@ -37,7 +38,7 @@ separate so it can have its own Git history and remote.
 Run from this folder:
 
 ```powershell
-py -3.12 -m http.server 8000
+python -m http.server 8000
 ```
 
 Then open `http://localhost:8000`. The site fetches model JSON, so use an HTTP
@@ -45,7 +46,14 @@ server rather than opening `index.html` as a `file://` URL.
 
 ## Updating trained results
 
-Training scripts are intentionally kept in the coursework repository. After
-retraining there, copy the regenerated `docs/model/ridge_model.json` and
-`docs/model/research_results.json` into this folder, then commit and push those
-updated files to the new site repository.
+Training scripts and datasets are intentionally kept in the coursework
+repository. If you retrain, export the browser Ridge artifact and the comparison
+metrics JSON from that coursework repository, then copy the resulting
+`ridge_model.json` and `research_results.json` into this site's `model/` folder.
+Keep the current schemas: `ridge_model.json` has five ordered feature objects,
+an intercept, and matching ordered coefficients; `research_results.json` has a
+`models` array and its holdout scope. Commit the two exported JSON files here.
+The browser form evaluates `expm1(intercept + Σ(coefficient ×
+((input − mean) / scale)))`; if the artifact or feature order changes, update the
+browser implementation to match and verify parity against the coursework
+export. Do not copy the dataset or training scripts into this website repo.

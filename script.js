@@ -19,7 +19,7 @@ async function loadModel() {
     resultNote.textContent = `CV MAE $${Math.round(model.cv_mae_usd_mean).toLocaleString('en-US')} · holdout MAE $${Math.round(model.test_mae).toLocaleString('en-US')}`;
   } catch (error) {
     resultLabel.textContent = 'MODEL CHƯA ĐƯỢC TẢI';
-    resultNote.textContent = 'Kiểm tra file docs/model/ridge_model.json hoặc mở trang qua HTTP server.';
+    resultNote.textContent = 'Kiểm tra model/ridge_model.json và mở trang qua HTTP server.';
   }
 }
 
@@ -61,6 +61,7 @@ async function loadComparison() {
     const response = await fetch('./model/research_results.json', { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
+    if (!Array.isArray(data.models) || data.models.length === 0) throw new Error('Invalid results schema');
     body.replaceChildren();
     const money = (value) => `$${Math.round(value).toLocaleString('en-US')}`;
     data.models.forEach((item) => {
@@ -82,7 +83,7 @@ async function loadComparison() {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
     cell.colSpan = 5;
-    cell.textContent = 'Chưa có file model/research_results.json. Chạy scripts/export_web_results.py sau khi có đủ metrics.';
+    cell.textContent = 'Chưa tải được model/research_results.json. Kiểm tra file JSON và mở trang qua HTTP server.';
     row.append(cell);
     body.append(row);
   }
