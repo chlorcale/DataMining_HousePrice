@@ -1,0 +1,304 @@
+{
+  "model": "ElasticNet (scikit-learn) on log1p(SalePrice)",
+  "preprocessing": "make_linear_preprocessor(): FeatureBuilder(engineered=True) 86 cols; numeric median impute + missing indicators + StandardScaler; categorical 'Unknown' fill + OneHot(handle_unknown='ignore'); ~334 dense numeric output columns; refit inside each training fold",
+  "selection_policy": "log1p target kept (identity best 16107.3 vs log best 14660.1 USD, tolerance 1%)",
+  "search_space": {
+    "stage1_log_grid": {
+      "alpha": [
+        1e-05,
+        1.8957356524063752e-05,
+        3.5938136638046256e-05,
+        6.812920690579608e-05,
+        0.0001291549665014884,
+        0.00024484367468222265,
+        0.0004641588833612782,
+        0.0008799225435691075,
+        0.0016681005372000592,
+        0.0031622776601683794,
+        0.005994842503189409,
+        0.011364636663857255,
+        0.021544346900318846,
+        0.04084238652674522,
+        0.07742636826811278,
+        0.14677992676220705,
+        0.2782559402207126,
+        0.527499706370262,
+        1.0
+      ],
+      "l1_ratio": [
+        0.0,
+        0.1,
+        0.3,
+        0.5,
+        0.7,
+        0.9,
+        0.95,
+        1.0
+      ]
+    },
+    "stage2_refine": {
+      "alpha": [
+        1.711328304161781e-05,
+        2.1544346900318823e-05,
+        2.7122725793320296e-05,
+        3.414548873833601e-05,
+        4.2986623470822724e-05,
+        5.411695265464637e-05,
+        6.812920690579608e-05,
+        8.576958985908945e-05,
+        0.00010797751623277094,
+        0.00013593563908785255,
+        0.0001711328304161781,
+        0.00021544346900318823,
+        0.0002712272579332027
+      ],
+      "l1_ratio": [
+        0.9,
+        0.95,
+        0.99
+      ],
+      "center": {
+        "alpha": 6.812920690579608e-05,
+        "l1_ratio": 0.95
+      }
+    },
+    "identity_grid": {
+      "alpha": [
+        0.1,
+        0.22758459260747887,
+        0.5179474679231212,
+        1.1787686347935873,
+        2.682695795279726,
+        6.105402296585329,
+        13.894954943731374,
+        31.622776601683793,
+        71.96856730011521,
+        163.78937069540646,
+        372.7593720314942,
+        848.3428982440726,
+        1930.6977288832495,
+        4393.970560760795,
+        10000.0
+      ],
+      "l1_ratio": [
+        0.1,
+        0.3,
+        0.5,
+        0.7,
+        0.9,
+        0.95
+      ],
+      "note": "ablation grid; mixed l1 only, USD-scale penalty range"
+    },
+    "scoring": "neg mean absolute error in USD (after inverse target transform)"
+  },
+  "tuning": {
+    "method": "GridSearchCV coarse->refine, per-fold preprocessing refit",
+    "cv": "KFold(n_splits=5, shuffle=True, random_state=123) over 2344 development rows",
+    "cv_folds": 5,
+    "seed_cv": 123,
+    "seed_estimator": 42
+  },
+  "best_params": {
+    "alpha": 5.411695265464637e-05,
+    "l1_ratio": 0.99,
+    "target_transform": "log1p",
+    "max_iter": 10000
+  },
+  "cv_mae": {
+    "mean": 14660.05171899121,
+    "std": 3491.880801665683
+  },
+  "cv_table": {
+    "mae": {
+      "per_fold": [
+        12553.497301335115,
+        13672.819732500657,
+        20854.705847902496,
+        12810.203826887659,
+        13409.03188633011
+      ],
+      "mean": 14660.05171899121,
+      "std": 3491.880801665683
+    },
+    "rmse": {
+      "per_fold": [
+        18077.663249899684,
+        20288.022296661962,
+        102035.71403270143,
+        17352.933169586027,
+        19434.36118549384
+      ],
+      "mean": 35437.73878686859,
+      "std": 37246.96205093292
+    },
+    "r2": {
+      "per_fold": [
+        0.9447633910021985,
+        0.9230917754592196,
+        -0.706850360397469,
+        0.9385147621373134,
+        0.9491784603228637
+      ],
+      "mean": 0.6097396057048252,
+      "std": 0.7360624119865143
+    },
+    "mape": {
+      "per_fold": [
+        8.115700264816104,
+        8.412733542788159,
+        12.273149397833578,
+        7.978900223261376,
+        8.637513565471695
+      ],
+      "mean": 9.083599398834181,
+      "std": 1.8013516984334499
+    }
+  },
+  "train_vs_cv_gap": {
+    "dev_train_mae_after_refit": 11691.12594789076,
+    "cv_mae_mean": 14660.05171899121
+  },
+  "endpoint_references": {
+    "ridge_like_l1_ratio_0": {
+      "cv_mae": 15167.010578521656,
+      "alpha": 3.5938136638046256e-05
+    },
+    "lasso_like_l1_ratio_1": {
+      "cv_mae": 14680.023091755113,
+      "alpha": 6.812920690579608e-05
+    },
+    "note": "reference only; final model is a mixed elastic net (Member B mandate)"
+  },
+  "ablation_identity_target": {
+    "best_cv_mae": 16107.288705678424,
+    "alpha": 0.2275845926074788,
+    "l1_ratio": 0.95
+  },
+  "coefficients": {
+    "nonzero": 233,
+    "total": 334,
+    "top15_by_abs": [
+      {
+        "feature": "roof_matl_ClyTile",
+        "coef": -2.2674
+      },
+      {
+        "feature": "misc_feature_Elev",
+        "coef": -1.6998
+      },
+      {
+        "feature": "functional_Sal",
+        "coef": -1.2831
+      },
+      {
+        "feature": "neighborhood_GrnHill",
+        "coef": 0.4525
+      },
+      {
+        "feature": "mas_vnr_type_CBlock",
+        "coef": -0.2028
+      },
+      {
+        "feature": "ms_zoning_C (all)",
+        "coef": -0.2004
+      },
+      {
+        "feature": "heating_Grav",
+        "coef": -0.1686
+      },
+      {
+        "feature": "gr_liv_area",
+        "coef": 0.1653
+      },
+      {
+        "feature": "functional_Sev",
+        "coef": -0.1421
+      },
+      {
+        "feature": "exterior_1st_PreCast",
+        "coef": 0.1394
+      },
+      {
+        "feature": "exterior_2nd_PreCast",
+        "coef": 0.1394
+      },
+      {
+        "feature": "garage_qual_Ex",
+        "coef": 0.1267
+      },
+      {
+        "feature": "quality_x_living_area",
+        "coef": -0.1225
+      },
+      {
+        "feature": "overall_qual",
+        "coef": 0.1206
+      },
+      {
+        "feature": "condition_2_PosA",
+        "coef": 0.1155
+      }
+    ]
+  },
+  "n_dev": 2344,
+  "n_test": 586,
+  "convergence": {
+    "max_iter": 10000,
+    "warnings_in_final_fit": 0,
+    "cv_training_folds": [
+      {
+        "fold": 1,
+        "n_iter": 5133,
+        "convergence_warnings": 0
+      },
+      {
+        "fold": 2,
+        "n_iter": 7449,
+        "convergence_warnings": 0
+      },
+      {
+        "fold": 3,
+        "n_iter": 4986,
+        "convergence_warnings": 0
+      },
+      {
+        "fold": 4,
+        "n_iter": 8809,
+        "convergence_warnings": 0
+      },
+      {
+        "fold": 5,
+        "n_iter": 7424,
+        "convergence_warnings": 0
+      }
+    ]
+  },
+  "test_mae": 14267.020354852873,
+  "test_rmse": 31953.770931744377,
+  "test_r2": 0.8726489089236056,
+  "test_mape_pct": 7.780717588346059,
+  "test_rmsle": 0.12332572688178932,
+  "runtime_seconds": {
+    "stage1": 1730.4,
+    "stage2_refine": 784.2553397000001,
+    "identity_grid": 64.59059909999996,
+    "final_fit": 13.947139300000345,
+    "last_invocation": 65.99056819999896,
+    "note": "grid stage times are read from the cached runs that produced the CSVs; last_invocation covers only the latest execution, where cached stages are reloaded instead of recomputed"
+  },
+  "library_versions": {
+    "python": "3.11.9",
+    "numpy": "2.4.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0",
+    "lightgbm": "4.7.0"
+  },
+  "limitations": [
+    "Linear additive model; nonlinearity only via the 7 shared engineered features, no learned interactions.",
+    "One-hot expansion to ~334 columns; per-level coefficients are noisy for rare categories.",
+    "Ames, Iowa 2006-2010, one city; historic-transaction analysis (sale-time fields included), not a pre-sale forecaster.",
+    "Single holdout estimate is noisy; CV mean +/- std reported alongside.",
+    "Convergence warnings suppressed during grid search; the final frozen model was checked separately."
+  ]
+}

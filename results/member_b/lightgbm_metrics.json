@@ -1,0 +1,357 @@
+{
+  "model": "LightGBM (LGBMRegressor, native categorical) on log1p(SalePrice)",
+  "preprocessing": "make_lightgbm_preprocessor(): FeatureBuilder(engineered=True) 86 cols; categoricals as pandas category with fold-train vocabularies (unseen levels -> NaN); numeric NaNs kept for native handling; no scaling, no imputation",
+  "selection_policy": "target=log1p (identity at best structure: 13857.7 vs log1p 13600.1 USD, tolerance 1%)",
+  "search_space": {
+    "distributions": {
+      "n_estimators": [
+        300,
+        500,
+        700,
+        1000
+      ],
+      "learning_rate": [
+        0.03,
+        0.05,
+        0.1
+      ],
+      "num_leaves": [
+        15,
+        31,
+        63
+      ],
+      "min_child_samples": [
+        5,
+        10,
+        20,
+        40
+      ],
+      "colsample_bytree": [
+        0.6,
+        0.8,
+        1.0
+      ],
+      "subsample": [
+        0.7,
+        0.9,
+        1.0
+      ],
+      "subsample_freq": [
+        1
+      ],
+      "reg_lambda": [
+        0.0,
+        1.0,
+        5.0,
+        10.0
+      ]
+    },
+    "n_iter": 40,
+    "method": "RandomizedSearchCV"
+  },
+  "tuning": {
+    "method": "RandomizedSearchCV, per-fold preprocessing refit",
+    "cv": "KFold(n_splits=5, shuffle=True, random_state=123) over 2344 development rows",
+    "cv_folds": 5,
+    "seed_cv": 123,
+    "seed_search": 42,
+    "seed_estimator": 42,
+    "scoring": "neg mean absolute error in USD (after inverse target transform)"
+  },
+  "best_params": {
+    "subsample_freq": 1,
+    "subsample": 0.7,
+    "reg_lambda": 5,
+    "num_leaves": 15,
+    "n_estimators": 700,
+    "min_child_samples": 5,
+    "learning_rate": 0.03,
+    "colsample_bytree": 0.8,
+    "target_transform": "log1p"
+  },
+  "cv_mae": {
+    "mean": 13600.110525259433,
+    "std": 1019.3382399252534
+  },
+  "cv_table": {
+    "mae": {
+      "per_fold": [
+        12554.21487659274,
+        13429.646207828491,
+        14951.945968865173,
+        12758.87096718406,
+        14305.874605826699
+      ],
+      "mean": 13600.110525259433,
+      "std": 1019.3382399252534
+    },
+    "rmse": {
+      "per_fold": [
+        20220.873746584974,
+        21375.608596093567,
+        31212.098263837535,
+        18197.81052134911,
+        27826.722857985365
+      ],
+      "mean": 23766.62279717011,
+      "std": 5505.008465738003
+    },
+    "r2": {
+      "per_fold": [
+        0.9308897824425931,
+        0.9146250748744594,
+        0.8402882150966079,
+        0.9323818403296976,
+        0.895808712675844
+      ],
+      "mean": 0.9027987250838404,
+      "std": 0.03794915971691704
+    },
+    "mape": {
+      "per_fold": [
+        7.723876690366685,
+        8.044566535776427,
+        8.937585468356634,
+        7.771187183806933,
+        8.746467860070478
+      ],
+      "mean": 8.244736747675432,
+      "std": 0.5628911887225979
+    }
+  },
+  "train_vs_cv_gap": {
+    "dev_train_mae_after_refit": 6381.957527387492,
+    "cv_mae_mean": 13600.110525259433,
+    "note": "gap indicates in-sample fit; preprocessing refit on all dev"
+  },
+  "ablation_identity_target": {
+    "cv_mae_at_best_structure": 13857.719007497759,
+    "log1p_cv_mae": 13600.110525259433,
+    "secondary_search": null
+  },
+  "importance_top20_gain": [
+    {
+      "feature": "quality_x_living_area",
+      "gain_pct": 46.528,
+      "splits": 609
+    },
+    {
+      "feature": "overall_qual",
+      "gain_pct": 11.083,
+      "splits": 308
+    },
+    {
+      "feature": "living_plus_total_basement_sf",
+      "gain_pct": 8.001,
+      "splits": 463
+    },
+    {
+      "feature": "neighborhood",
+      "gain_pct": 7.796,
+      "splits": 526
+    },
+    {
+      "feature": "kitchen_qual",
+      "gain_pct": 2.014,
+      "splits": 35
+    },
+    {
+      "feature": "central_air",
+      "gain_pct": 1.765,
+      "splits": 59
+    },
+    {
+      "feature": "bsmtfin_sf_1",
+      "gain_pct": 1.628,
+      "splits": 263
+    },
+    {
+      "feature": "garage_cars",
+      "gain_pct": 1.424,
+      "splits": 61
+    },
+    {
+      "feature": "overall_cond",
+      "gain_pct": 1.393,
+      "splits": 289
+    },
+    {
+      "feature": "total_bsmt_sf",
+      "gain_pct": 1.357,
+      "splits": 337
+    },
+    {
+      "feature": "lot_area",
+      "gain_pct": 1.35,
+      "splits": 629
+    },
+    {
+      "feature": "year_built",
+      "gain_pct": 1.288,
+      "splits": 222
+    },
+    {
+      "feature": "garage_yr_blt",
+      "gain_pct": 1.09,
+      "splits": 464
+    },
+    {
+      "feature": "total_bathrooms",
+      "gain_pct": 1.073,
+      "splits": 123
+    },
+    {
+      "feature": "age_at_sale",
+      "gain_pct": 0.965,
+      "splits": 211
+    },
+    {
+      "feature": "years_since_remodel",
+      "gain_pct": 0.953,
+      "splits": 252
+    },
+    {
+      "feature": "year_remod_add",
+      "gain_pct": 0.868,
+      "splits": 213
+    },
+    {
+      "feature": "1st_flr_sf",
+      "gain_pct": 0.861,
+      "splits": 300
+    },
+    {
+      "feature": "garage_area",
+      "gain_pct": 0.767,
+      "splits": 389
+    },
+    {
+      "feature": "sale_condition",
+      "gain_pct": 0.602,
+      "splits": 107
+    }
+  ],
+  "holdout_mae_by_neighborhood": {
+    "NAmes": {
+      "n": 76,
+      "mae": 8326.132809702254
+    },
+    "CollgCr": {
+      "n": 56,
+      "mae": 9607.795549298138
+    },
+    "Somerst": {
+      "n": 46,
+      "mae": 11031.571569396338
+    },
+    "NridgHt": {
+      "n": 45,
+      "mae": 31301.379702224152
+    },
+    "Edwards": {
+      "n": 44,
+      "mae": 12139.617171646752
+    },
+    "OldTown": {
+      "n": 40,
+      "mae": 10246.041868971804
+    },
+    "Sawyer": {
+      "n": 32,
+      "mae": 7433.574755519827
+    },
+    "Gilbert": {
+      "n": 27,
+      "mae": 9470.092164893756
+    },
+    "SawyerW": {
+      "n": 27,
+      "mae": 7079.86067297543
+    },
+    "BrkSide": {
+      "n": 24,
+      "mae": 8980.660794809328
+    },
+    "NWAmes": {
+      "n": 22,
+      "mae": 9323.887404247454
+    },
+    "IDOTRR": {
+      "n": 20,
+      "mae": 10463.790470761009
+    },
+    "Mitchel": {
+      "n": 17,
+      "mae": 17310.67150603806
+    },
+    "StoneBr": {
+      "n": 15,
+      "mae": 28027.427898589794
+    },
+    "NoRidge": {
+      "n": 14,
+      "mae": 19599.020511474802
+    },
+    "Crawfor": {
+      "n": 14,
+      "mae": 33019.21749576876
+    },
+    "Timber": {
+      "n": 13,
+      "mae": 25035.628226991168
+    },
+    "SWISU": {
+      "n": 11,
+      "mae": 6924.048107015268
+    }
+  },
+  "holdout_mae_by_year": {
+    "2006": {
+      "n": 129,
+      "mae": 12375.177426263816
+    },
+    "2007": {
+      "n": 135,
+      "mae": 13040.092236762857
+    },
+    "2008": {
+      "n": 134,
+      "mae": 11976.799988591598
+    },
+    "2009": {
+      "n": 116,
+      "mae": 15524.881859527623
+    },
+    "2010": {
+      "n": 72,
+      "mae": 12365.652840867391
+    }
+  },
+  "n_dev": 2344,
+  "n_test": 586,
+  "test_mae": 13059.581635955543,
+  "test_rmse": 21149.338399607248,
+  "test_r2": 0.9442105593136806,
+  "test_mape_pct": 6.896279050521958,
+  "test_rmsle": 0.09620929401500908,
+  "runtime_seconds": {
+    "primary_search": 490.46252430000004,
+    "final_fit": 0.6422405000002982,
+    "total": 500.0233542999995
+  },
+  "library_versions": {
+    "python": "3.11.9",
+    "numpy": "2.4.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0",
+    "lightgbm": "4.7.0"
+  },
+  "limitations": [
+    "Historic-transaction framing: sale-time fields (yr_sold, mo_sold, sale_type, sale_condition) are known features; not a pre-sale forecaster.",
+    "Categorical vocabularies are learned per training fold; unseen levels at serving time fall to the NaN branch and require a refit on new data.",
+    "Small dataset for boosting; heavy regularization selected by CV, yet the train-vs-CV gap stays larger than for linear models (see train_vs_cv_gap).",
+    "Gain importance is correlational, not causal.",
+    "One city, 2006-2010; year effects may partly memorize the market cycle rather than general price dynamics.",
+    "Single holdout estimate is noisy; CV mean +/- std reported alongside."
+  ]
+}
