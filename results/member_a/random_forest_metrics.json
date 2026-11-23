@@ -1,0 +1,213 @@
+{
+  "model": "Random Forest Regressor (scikit-learn)",
+  "preprocessing": "FeatureBuilder(86 predictors), numeric median imputation + missing indicators, categorical Unknown fill + OrdinalEncoder; fitted within each CV fold.",
+  "selection_policy": "RandomizedSearchCV selects tree structure using log1p-target development CV MAE in USD; at selected structure compare log1p and identity via development CV MAE; then score holdout once.",
+  "search_space": {
+    "regressor__estimator__n_estimators": [
+      300,
+      500,
+      800
+    ],
+    "regressor__estimator__max_depth": [
+      null,
+      12,
+      20,
+      30
+    ],
+    "regressor__estimator__min_samples_split": [
+      2,
+      5,
+      10
+    ],
+    "regressor__estimator__min_samples_leaf": [
+      1,
+      2,
+      4
+    ],
+    "regressor__estimator__max_features": [
+      0.5,
+      0.8,
+      1.0
+    ],
+    "regressor__estimator__max_samples": [
+      0.7,
+      0.85,
+      null
+    ]
+  },
+  "n_iter": 30,
+  "tuning": {
+    "method": "RandomizedSearchCV",
+    "cv": "KFold(n_splits=5, shuffle=True, random_state=123) over development rows",
+    "seed_cv": 123,
+    "seed_search": 42
+  },
+  "best_params": {
+    "n_estimators": 800,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "max_samples": null,
+    "max_features": 0.5,
+    "max_depth": 20,
+    "target_transform": "identity"
+  },
+  "cv_mae": {
+    "mean": 15481.718578117056,
+    "std": 1444.9007404735958
+  },
+  "cv_table": {
+    "mae": {
+      "per_fold": [
+        13840.56122759086,
+        15457.711183097848,
+        16642.689907051932,
+        14287.782979072768,
+        17179.84759377186
+      ],
+      "mean": 15481.718578117056,
+      "std": 1444.9007404735958
+    },
+    "rmse": {
+      "per_fold": [
+        22628.140334643733,
+        24887.27464889741,
+        35615.2947267875,
+        19850.38256828641,
+        30635.25577949198
+      ],
+      "mean": 26723.269611621403,
+      "std": 6359.034597230638
+    },
+    "r2": {
+      "per_fold": [
+        0.9134553647477712,
+        0.8842694439574063,
+        0.7920475135724668,
+        0.919543185927376,
+        0.8737154270333366
+      ],
+      "mean": 0.8766061870476716,
+      "std": 0.051036014317785025
+    },
+    "mape": {
+      "per_fold": [
+        8.757214864264494,
+        9.489304102333866,
+        10.08552988577768,
+        8.928271920428395,
+        10.860816701801726
+      ],
+      "mean": 9.624227494921232,
+      "std": 0.8654799459889957
+    }
+  },
+  "target_transform_ablation": {
+    "log1p_cv_mae": 15497.129472091572,
+    "identity_cv_mae": 15481.718578117056
+  },
+  "feature_importance_top20": [
+    {
+      "feature": "num__quality_x_living_area",
+      "importance": 0.3824093516693673
+    },
+    {
+      "feature": "num__overall_qual",
+      "importance": 0.17857924774804135
+    },
+    {
+      "feature": "num__living_plus_total_basement_sf",
+      "importance": 0.13774566574154953
+    },
+    {
+      "feature": "num__garage_cars",
+      "importance": 0.03065984312173488
+    },
+    {
+      "feature": "num__year_built",
+      "importance": 0.02576874038075394
+    },
+    {
+      "feature": "num__age_at_sale",
+      "importance": 0.023359153983651283
+    },
+    {
+      "feature": "num__total_bsmt_sf",
+      "importance": 0.016859477566073203
+    },
+    {
+      "feature": "num__bsmtfin_sf_1",
+      "importance": 0.016038328778735154
+    },
+    {
+      "feature": "cat__bsmt_qual",
+      "importance": 0.015224288059258068
+    },
+    {
+      "feature": "num__1st_flr_sf",
+      "importance": 0.011839729345176552
+    },
+    {
+      "feature": "num__gr_liv_area",
+      "importance": 0.011827860005309422
+    },
+    {
+      "feature": "num__2nd_flr_sf",
+      "importance": 0.011508290871167904
+    },
+    {
+      "feature": "num__lot_area",
+      "importance": 0.011103106726456695
+    },
+    {
+      "feature": "num__garage_area",
+      "importance": 0.0098802442080225
+    },
+    {
+      "feature": "num__total_bathrooms",
+      "importance": 0.009728827544919607
+    },
+    {
+      "feature": "cat__kitchen_qual",
+      "importance": 0.008552613966510055
+    },
+    {
+      "feature": "cat__exter_qual",
+      "importance": 0.008545545107586303
+    },
+    {
+      "feature": "num__years_since_remodel",
+      "importance": 0.005746525530553871
+    },
+    {
+      "feature": "num__year_remod_add",
+      "importance": 0.005613259542519367
+    },
+    {
+      "feature": "num__garage_yr_blt",
+      "importance": 0.004999986916361383
+    }
+  ],
+  "n_dev": 2344,
+  "n_test": 586,
+  "test_mae": 14813.425818499718,
+  "test_rmse": 25139.130911735807,
+  "test_r2": 0.921175912081409,
+  "test_mape_pct": 8.074507833477675,
+  "test_rmsle": 0.11554912680667086,
+  "runtime_seconds": {
+    "randomized_search": 129.12435559999722,
+    "final_fit": 12.476517400005832,
+    "total": 270.9801690999884
+  },
+  "library_versions": {
+    "python": "3.12.0",
+    "numpy": "2.5.5",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0"
+  },
+  "limitations": [
+    "Ordinal encoding imposes an arbitrary order on nominal categories for tree splits.",
+    "Ensemble can be less interpretable than a linear model; impurity importance can favor high-cardinality features.",
+    "Ames transactions are historical and from one city; this is not a current Vietnam valuation model."
+  ]
+}

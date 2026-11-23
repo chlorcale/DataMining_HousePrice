@@ -1,0 +1,220 @@
+{
+  "model": "Ridge Regression (scikit-learn)",
+  "preprocessing": "FeatureBuilder(86 predictors), numeric median imputation + missing indicators + StandardScaler, categorical Unknown fill + OneHotEncoder; fitted within each CV fold.",
+  "selection_policy": "5-fold development CV MAE in USD; log1p target retained unless identity improves by more than 1%.",
+  "search_space": {
+    "alpha_log1p": [
+      0.001,
+      0.0021544346900318843,
+      0.004641588833612777,
+      0.01,
+      0.021544346900318832,
+      0.046415888336127774,
+      0.1,
+      0.21544346900318823,
+      0.46415888336127775,
+      1.0,
+      2.154434690031882,
+      4.6415888336127775,
+      10.0,
+      21.54434690031882,
+      46.41588833612773,
+      100.0,
+      215.44346900318823,
+      464.1588833612773,
+      1000.0
+    ],
+    "alpha_identity": [
+      1.0,
+      2.154434690031884,
+      4.641588833612778,
+      10.0,
+      21.544346900318832,
+      46.41588833612777,
+      100.0,
+      215.44346900318823,
+      464.15888336127773,
+      1000.0,
+      2154.4346900318824,
+      4641.588833612777,
+      10000.0,
+      21544.346900318822,
+      46415.888336127726,
+      100000.0,
+      215443.46900318822,
+      464158.8833612772,
+      1000000.0
+    ],
+    "scoring": "negative MAE in USD"
+  },
+  "tuning": {
+    "method": "GridSearchCV",
+    "cv": "KFold(n_splits=5, shuffle=True, random_state=123) over development rows",
+    "seed_cv": 123
+  },
+  "best_params": {
+    "alpha": 0.046415888336127774,
+    "target_transform": "log1p"
+  },
+  "cv_mae": {
+    "mean": 15165.074706845404,
+    "std": 3515.4061319508487
+  },
+  "cv_table": {
+    "mae": {
+      "per_fold": [
+        13258.446012923516,
+        13942.896390134996,
+        21406.213981471185,
+        13104.804037136826,
+        14113.013112560502
+      ],
+      "mean": 15165.074706845404,
+      "std": 3515.4061319508487
+    },
+    "rmse": {
+      "per_fold": [
+        19545.015625668384,
+        20762.40973930734,
+        109311.79235628039,
+        18266.43957445208,
+        21071.094697114942
+      ],
+      "mean": 37791.35039856463,
+      "std": 39996.48817039911
+    },
+    "r2": {
+      "per_fold": [
+        0.9354324260064013,
+        0.9194530920107759,
+        -0.9589577210614406,
+        0.9318708644942229,
+        0.940257763543915
+      ],
+      "mean": 0.5536112849987749,
+      "std": 0.8455868403693956
+    },
+    "mape": {
+      "per_fold": [
+        8.920376453095033,
+        8.559605209731306,
+        12.705486350999157,
+        8.15211771356098,
+        9.000642507624788
+      ],
+      "mean": 9.467645647002254,
+      "std": 1.8409480646280407
+    }
+  },
+  "target_transform_ablation": {
+    "log1p_cv_mae": 15165.074706845518,
+    "identity_cv_mae": 16018.568956762445,
+    "tolerance": 0.01
+  },
+  "top_coefficients_by_absolute_value": [
+    {
+      "feature": "cat__roof_matl_ClyTile",
+      "coefficient": -2.1208914516793302
+    },
+    {
+      "feature": "cat__misc_feature_Elev",
+      "coefficient": -1.4010499477559337
+    },
+    {
+      "feature": "cat__functional_Sal",
+      "coefficient": -1.2868007797224956
+    },
+    {
+      "feature": "cat__neighborhood_GrnHill",
+      "coefficient": 0.46986057774308626
+    },
+    {
+      "feature": "cat__roof_matl_Membran",
+      "coefficient": 0.4469707156456425
+    },
+    {
+      "feature": "cat__misc_feature_Gar2",
+      "coefficient": 0.39258114972571323
+    },
+    {
+      "feature": "cat__roof_matl_Metal",
+      "coefficient": 0.392275397830957
+    },
+    {
+      "feature": "cat__misc_feature_Othr",
+      "coefficient": 0.36079231968942327
+    },
+    {
+      "feature": "cat__roof_matl_Roll",
+      "coefficient": 0.3545973690794908
+    },
+    {
+      "feature": "cat__misc_feature_Unknown",
+      "coefficient": 0.3249664416860479
+    },
+    {
+      "feature": "cat__mas_vnr_type_CBlock",
+      "coefficient": -0.3229204876638174
+    },
+    {
+      "feature": "cat__misc_feature_Shed",
+      "coefficient": 0.32271003665312137
+    },
+    {
+      "feature": "cat__roof_matl_WdShngl",
+      "coefficient": 0.2970969277402572
+    },
+    {
+      "feature": "cat__functional_Typ",
+      "coefficient": 0.296316409781424
+    },
+    {
+      "feature": "cat__functional_Min1",
+      "coefficient": 0.2721711556395667
+    },
+    {
+      "feature": "cat__functional_Min2",
+      "coefficient": 0.26545847033475567
+    },
+    {
+      "feature": "cat__garage_qual_Ex",
+      "coefficient": 0.25352598082950223
+    },
+    {
+      "feature": "cat__functional_Mod",
+      "coefficient": 0.22909047795258128
+    },
+    {
+      "feature": "cat__roof_matl_Tar&Grv",
+      "coefficient": 0.22373811769570884
+    },
+    {
+      "feature": "cat__ms_zoning_C (all)",
+      "coefficient": -0.21587110715868355
+    }
+  ],
+  "n_dev": 2344,
+  "n_test": 586,
+  "test_mae": 14253.31201810777,
+  "test_rmse": 31101.182385592394,
+  "test_r2": 0.8793541923144618,
+  "test_mape_pct": 7.842138588081622,
+  "test_rmsle": 0.12720087228894614,
+  "runtime_seconds": {
+    "log_grid": 8.361790499999188,
+    "identity_grid": 2.3217061999894213,
+    "final_fit": 0.0770702000008896,
+    "total": 11.69553409999935
+  },
+  "library_versions": {
+    "python": "3.12.0",
+    "numpy": "2.5.5",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.8.0"
+  },
+  "limitations": [
+    "Linear additive model; interactions limited to shared engineered features.",
+    "One-hot coefficients for rare levels may be unstable.",
+    "Ames transactions are historical and from one city; this is not a current Vietnam valuation model."
+  ]
+}

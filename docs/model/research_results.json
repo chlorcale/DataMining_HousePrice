@@ -1,0 +1,72 @@
+{
+  "scope": "Ames Housing historical transactions, Ames Iowa, USD",
+  "holdout_rows": 586,
+  "models": [
+    {
+      "model": "Ridge",
+      "cv_mae": 15165.074706845404,
+      "cv_mae_std": 3515.4061319508487,
+      "test_mae": 14253.31201810777,
+      "test_rmse": 31101.182385592394,
+      "test_r2": 0.8793541923144618,
+      "test_mape_pct": 7.842138588081622,
+      "best_params": {
+        "alpha": 0.046415888336127774,
+        "target_transform": "log1p"
+      }
+    },
+    {
+      "model": "Random Forest",
+      "cv_mae": 15481.718578117056,
+      "cv_mae_std": 1444.9007404735958,
+      "test_mae": 14813.425818499718,
+      "test_rmse": 25139.130911735807,
+      "test_r2": 0.921175912081409,
+      "test_mape_pct": 8.074507833477675,
+      "best_params": {
+        "n_estimators": 800,
+        "min_samples_split": 5,
+        "min_samples_leaf": 2,
+        "max_samples": null,
+        "max_features": 0.5,
+        "max_depth": 20,
+        "target_transform": "identity"
+      }
+    },
+    {
+      "model": "ElasticNet",
+      "cv_mae": 14660.05171899121,
+      "cv_mae_std": 3491.880801665683,
+      "test_mae": 14267.020354852873,
+      "test_rmse": 31953.770931744377,
+      "test_r2": 0.8726489089236056,
+      "test_mape_pct": 7.780717588346059,
+      "best_params": {
+        "alpha": 5.411695265464637e-05,
+        "l1_ratio": 0.99,
+        "target_transform": "log1p",
+        "max_iter": 10000
+      }
+    },
+    {
+      "model": "LightGBM",
+      "cv_mae": 13600.110525259433,
+      "cv_mae_std": 1019.3382399252534,
+      "test_mae": 13059.581635955543,
+      "test_rmse": 21149.338399607248,
+      "test_r2": 0.9442105593136806,
+      "test_mape_pct": 6.896279050521958,
+      "best_params": {
+        "subsample_freq": 1,
+        "subsample": 0.7,
+        "reg_lambda": 5,
+        "num_leaves": 15,
+        "n_estimators": 700,
+        "min_child_samples": 5,
+        "learning_rate": 0.03,
+        "colsample_bytree": 0.8,
+        "target_transform": "log1p"
+      }
+    }
+  ]
+}

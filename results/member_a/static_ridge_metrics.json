@@ -1,0 +1,113 @@
+{
+  "model": "Ames pre-sale Ridge (5 numeric features)",
+  "preprocessing": "Five raw numeric pre-sale features; median imputation and StandardScaler fit within each CV fold.",
+  "selection_policy": "GridSearchCV minimizes 5-fold development MAE in USD on log1p target.",
+  "search_space": {
+    "alpha": [
+      1e-08,
+      3.162277660168379e-08,
+      1e-07,
+      3.162277660168379e-07,
+      1e-06,
+      3.162277660168379e-06,
+      1e-05,
+      3.1622776601683795e-05,
+      0.0001,
+      0.00031622776601683794,
+      0.001,
+      0.0031622776601683794,
+      0.01,
+      0.03162277660168379,
+      0.1,
+      0.31622776601683794,
+      1.0,
+      3.1622776601683795,
+      10.0,
+      31.622776601683793,
+      100.0,
+      316.22776601683796,
+      1000.0,
+      3162.2776601683795,
+      10000.0
+    ]
+  },
+  "tuning": {
+    "method": "GridSearchCV",
+    "cv": "KFold(n_splits=5, shuffle=True, random_state=123) over development rows"
+  },
+  "best_params": {
+    "alpha": 1e-08,
+    "target_transform": "log1p"
+  },
+  "cv_mae": {
+    "mean": 23070.065521935187,
+    "std": 2117.0241951411676
+  },
+  "cv_table": {
+    "mae": {
+      "per_fold": [
+        21717.43512614192,
+        22420.159907612186,
+        26824.04956813658,
+        22037.819707627346,
+        22350.863300157893
+      ],
+      "mean": 23070.065521935187,
+      "std": 2117.0241951411676
+    },
+    "rmse": {
+      "per_fold": [
+        31548.332652837304,
+        32624.982688216583,
+        83440.96404038391,
+        29510.66017622298,
+        30597.414911024724
+      ],
+      "mean": 41544.4708937371,
+      "std": 23449.13016851701
+    },
+    "r2": {
+      "per_fold": [
+        0.8317731751964005,
+        0.8011187053567357,
+        -0.14143098715657088,
+        0.822179052791922,
+        0.8740272094188095
+      ],
+      "mean": 0.6375334311214594,
+      "std": 0.436261990621343
+    },
+    "mape": {
+      "per_fold": [
+        13.377644374912057,
+        13.657659907643222,
+        15.607311120112216,
+        13.429579681007137,
+        14.321335953152174
+      ],
+      "mean": 14.07870620736536,
+      "std": 0.9334927824397973
+    }
+  },
+  "n_dev": 2344,
+  "n_test": 586,
+  "test_mae": 24897.761853931763,
+  "test_rmse": 44258.971495144484,
+  "test_r2": 0.755678846613864,
+  "test_mape_pct": 13.581329232344313,
+  "test_rmsle": 0.1776248185049603,
+  "feature_names": [
+    "gr_liv_area",
+    "overall_qual",
+    "bedroom_abvgr",
+    "full_bath",
+    "year_built"
+  ],
+  "limitations": [
+    "Separate restricted-feature Ridge experiment for the static web; not the full 86-feature member comparison.",
+    "Historical Ames, Iowa prices in USD; not a Vietnam market estimator or current market quote.",
+    "Only five numeric house features are used; location and many property details are omitted.",
+    "Single random holdout estimate; no prediction interval is provided.",
+    "Naive expm1 inverse of a log target is not bias-corrected for the original-price mean."
+  ]
+}

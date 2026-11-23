@@ -1,5 +1,104 @@
-\section{Thuật toán thành viên A — chưa có kết quả}
+\section{Thuật toán thành viên A: Ridge Regression và Random Forest}
+\label{sec:member-a}
+
+Phần này phân tích hai mô hình hồi quy trên bộ Ames Housing. Tập dữ liệu gồm
+2.930 giao dịch nhà ở lịch sử tại Ames, Iowa; nhãn \texttt{SalePrice} có đơn vị
+USD. Đây là nghiên cứu giá giao dịch lịch sử của một thành phố tại Hoa Kỳ, không
+phải mô hình định giá hiện tại cho thị trường Việt Nam.
+
+\subsection{Giao thức thực nghiệm}
+
+Dữ liệu được đọc từ raw source qua \texttt{src.data.read\_dataset()}, sau đó
+chia bằng giao thức chung thành 2.344 dòng phát triển và 586 dòng holdout
+(\texttt{train\_test\_split}, seed 42). Tuning dùng 5-fold KFold shuffle trên
+tập phát triển (seed 123), tối ưu MAE theo USD. Các factory preprocessing chưa
+fit nằm trong pipeline estimator nên imputer, encoder và scaler chỉ học từ
+training partition tương ứng. Holdout chỉ được chấm sau khi chốt cấu hình.
+
 \subsection{Ridge Regression}
-\textbf{Placeholder:} Trình bày giả thuyết, công thức, cách sử dụng shared preprocessing, không gian tuning, CV, test, residual analysis và tài liệu tham khảo. Tự chạy và xác nhận kết quả trước khi điền.
-\subsection{Random Forest}
-\textbf{Placeholder:} Thiết kế estimator, đối chứng ordinal vs one-hot, hyperparameter search, bảng đánh giá và phân tích overfitting. Không sao chép kết quả Ultra.
+
+Ridge tối thiểu hóa tổng bình phương sai số cùng regularization L2:
+\[
+  \hat{\beta}=\arg\min_{\beta}\left\{\sum_i(y_i-\beta_0-x_i^T\beta)^2+
+  \alpha\sum_j\beta_j^2\right\}.
+\]
+Tham số \(\alpha\) được chọn bằng GridSearchCV trên lưới ghi trong
+\texttt{results/member\_a/ridge\_metrics.json}. Đầu vào số được điền median,
+bổ sung missing indicators và chuẩn hóa; biến danh mục điền \texttt{Unknown} rồi
+one-hot encode. Thử nghiệm so sánh target \(\log(1+SalePrice)\) với target USD
+identity; dự đoán được nghịch biến đổi về USD trước khi tính metric. Chính sách
+chọn giữ log nếu identity không tốt hơn CV MAE quá 1\%.
+
+Trên lưới hiện tại, cấu hình tốt nhất là \(\alpha=0.0464\) với target log1p.
+CV MAE = 15.165 USD (SD 3.515), holdout MAE = 14.253 USD, RMSE = 31.101 USD,
+\(R^2=0.879\), MAPE = 7.84\%. Các giá trị được lấy từ
+\texttt{results/member\_a/ridge\_metrics.json}; kết quả có thể thay đổi khi code,
+thư viện hoặc dữ liệu thay đổi.
+
+Top hệ số theo trị tuyệt đối được lưu trong metrics JSON. Vì đặc trưng số đã
+chuẩn hóa, hệ số biểu diễn thay đổi trên thang biến đổi; nếu target là log thì
+hệ số cũng ở thang log, không diễn giải trực tiếp là USD. One-hot levels hiếm có
+thể cho hệ số không ổn định.
+
+\subsection{Random Forest Regressor}
+
+Random Forest trung bình hóa dự đoán của nhiều cây quyết định được huấn luyện
+trên bootstrap samples và các tập con đặc trưng. RandomizedSearchCV khảo sát
+\texttt{n\_estimators}, độ sâu, kích thước lá/nút, tỷ lệ đặc trưng và tỷ lệ mẫu
+trên log1p target; cấu hình chọn theo development CV MAE USD. Tại cấu hình đã
+chọn, log1p và identity được so sánh bằng CV MAE development; search space cùng
+seed được lưu trong \texttt{random\_forest\_metrics.json}.
+Factory chung điền numeric missing values và ordinal-encode biến danh mục.
+
+Best configuration: 800 cây, max depth 20, min samples split 5, min samples leaf
+2, max features 0.5, không giới hạn max samples; target identity được chọn khi
+so sánh tại cấu hình này. CV MAE = 15.482 USD (SD 1.445), holdout MAE = 14.813
+USD, RMSE = 25.139 USD, \(R^2=0.921\), MAPE = 8.07\%. Nguồn là
+\texttt{results/member\_a/random\_forest\_metrics.json}.
+
+Top impurity importance được xuất để mô tả mô hình. Đây là thước đo phụ thuộc
+cấu trúc cây và có thể thiên lệch về biến nhiều mức; không diễn giải nó như tác
+động nhân quả. Ordinal encoding gán mã số cho danh mục và có thể áp đặt thứ tự
+không có ý nghĩa, là một hạn chế của preprocessing hiện tại.
+
+\subsection{So sánh, giới hạn và tái lập}
+
+\begin{table}[H]\centering
+\begin{tabular}{lrrrr}
+\toprule
+Mô hình & CV MAE (USD) & Holdout MAE (USD) & Holdout RMSE (USD) & Holdout $R^2$ \\
+\midrule
+Ridge & 15.165 $\pm$ 3.515 & 14.253 & 31.101 & 0.879 \\
+Random Forest & 15.482 $\pm$ 1.445 & 14.813 & 25.139 & 0.921 \\
+\bottomrule
+\end{tabular}
+\caption{Kết quả USD; CV trình bày mean $\pm$ SD giữa 5 fold.}
+\end{table}
+
+Các kết quả chỉ phản ánh tập Ames Housing và giao thức split đã chọn. Dữ liệu có
+thời điểm và điều kiện bán như \texttt{yr\_sold}, \texttt{mo\_sold},
+\texttt{sale\_type}, \texttt{sale\_condition}; vì vậy mô hình này phù hợp phân
+tích giao dịch lịch sử hơn là dự báo trước khi bán. Muốn đánh giá kịch bản
+pre-sale phải định nghĩa lại tập đặc trưng và chạy thí nghiệm riêng. Các hạn chế
+khác gồm một thành phố, holdout đơn lẻ, ordinal encoding ở Random Forest và
+importance không mang ý nghĩa nhân quả.
+
+\textbf{Tái lập:} chạy \texttt{python members/member\_a/train\_ridge.py} và
+\texttt{python members/member\_a/train\_random\_forest.py}. Mã nguồn tạo metrics,
+bảng CV và fitted pipeline dưới \texttt{results/member\_a/}. Sinh viên cần xem
+phân phối residual và các đặc trưng hàng đầu, xác nhận kết quả trên môi trường
+của mình, rồi hoàn thiện phần diễn giải và khai báo hỗ trợ AI.
+
+\subsection{Ridge rút gọn chạy trên GitHub Pages}
+
+Để static page có thể nhận đầu vào và dự đoán không cần Python server, một thí
+nghiệm Ridge riêng dùng 5 biến numeric biết trước giao dịch
+(\texttt{gr\_liv\_area}, \texttt{overall\_qual}, \texttt{bedroom\_abvgr},
+\texttt{full\_bath}, \texttt{year\_built}). Model được chọn bằng 5-fold dev CV,
+sau đó xuất hệ số cùng thông số scale sang JSON để JavaScript tính trực tiếp.
+CV MAE = 23.070 USD, holdout MAE = 24.898 USD, RMSE = 44.259 USD,
+\(R^2=0.756\), MAPE = 13.58\%. Sai số cao hơn mô hình đủ 86 đặc trưng vì web
+model bỏ qua nhiều thông tin như neighborhood và tầng hầm. Đây là một demo
+nghiên cứu lịch sử Ames, không phải giá hiện tại; không có prediction interval.
+Script xác nhận công thức JavaScript khớp pipeline sklearn trên holdout với sai
+khác tối đa 0 USD.

@@ -1,0 +1,83 @@
+{
+  "model_name": "Ames pre-sale Ridge (5 numeric features)",
+  "model_version": "1.0.0",
+  "target_transform": "log1p",
+  "target_inverse": "expm1",
+  "currency": "USD",
+  "dataset": "Ames Housing; historical transactions in Ames, Iowa",
+  "dataset_rows": 2930,
+  "split": {
+    "development_rows": 2344,
+    "holdout_rows": 586,
+    "holdout_seed": 42,
+    "cv_folds": 5,
+    "cv_seed": 123
+  },
+  "features": [
+    {
+      "name": "gr_liv_area",
+      "label": "Above-ground living area",
+      "unit": "sq ft",
+      "median": 1436.5,
+      "mean": 1492.8596416382252,
+      "scale": 504.51202339492585
+    },
+    {
+      "name": "overall_qual",
+      "label": "Overall material and finish quality",
+      "unit": "1-10",
+      "median": 6.0,
+      "mean": 6.064419795221843,
+      "scale": 1.388223354924429
+    },
+    {
+      "name": "bedroom_abvgr",
+      "label": "Bedrooms above ground",
+      "unit": "count",
+      "median": 3.0,
+      "mean": 2.845136518771331,
+      "scale": 0.8201766011844908
+    },
+    {
+      "name": "full_bath",
+      "label": "Full bathrooms",
+      "unit": "count",
+      "median": 2.0,
+      "mean": 1.5571672354948805,
+      "scale": 0.5520438252544562
+    },
+    {
+      "name": "year_built",
+      "label": "Year built",
+      "unit": "year",
+      "median": 1972.0,
+      "mean": 1970.5068259385666,
+      "scale": 30.3349608705448
+    }
+  ],
+  "intercept": 12.011813905965987,
+  "coefficients": [
+    0.16444532059305045,
+    0.18197293080801047,
+    -0.014317460045599209,
+    -0.009745157391338853,
+    0.10435032597479069
+  ],
+  "alpha": 1e-08,
+  "cv_mae_usd_mean": 23070.065521935187,
+  "cv_mae_usd_std": 2117.0241951411676,
+  "test_mae": 24897.761853931763,
+  "test_rmse": 44258.971495144484,
+  "test_r2": 0.755678846613864,
+  "test_mape_pct": 13.581329232344313,
+  "test_rmsle": 0.1776248185049603,
+  "browser_parity_max_abs_usd": 0.0,
+  "runtime_seconds": 4.094274300005054,
+  "limitations": [
+    "Separate restricted-feature Ridge experiment for the static web; not the full 86-feature member comparison.",
+    "Historical Ames, Iowa prices in USD; not a Vietnam market estimator or current market quote.",
+    "Only five numeric house features are used; location and many property details are omitted.",
+    "Single random holdout estimate; no prediction interval is provided.",
+    "Naive expm1 inverse of a log target is not bias-corrected for the original-price mean."
+  ]
+}
