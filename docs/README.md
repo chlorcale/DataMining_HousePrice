@@ -36,3 +36,12 @@ market valuation product.
 
 For modeling theory, evaluation protocol, leakage, and browser inference details, see
 [`LEARNING_GUIDE_MEMBER_A.md`](LEARNING_GUIDE_MEMBER_A.md).
+
+The interactive Python application is a separate Streamlit deployment (GitHub Pages
+cannot run Python). Run `python -m streamlit run app/streamlit_app.py` from the
+repository root; see [`STREAMLIT_GUIDE.md`](STREAMLIT_GUIDE.md) for the workflow,
+inference behavior, and limitations.
+
+The app's Markdown lessons with embedded Python examples are maintained in
+[`tutorials/`](tutorials/README.md) and rendered in the corresponding learning
+pages.
